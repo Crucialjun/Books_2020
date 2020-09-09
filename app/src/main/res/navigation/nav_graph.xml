@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/blookListFragment"
-        android:name="com.globomed.books2020.BlookListFragment"
+        android:name="com.globomed.books2020.BookListFragment"
         android:label="fragment_blook_list"
         tools:layout="@layout/fragment_blook_list" />
 </navigation>

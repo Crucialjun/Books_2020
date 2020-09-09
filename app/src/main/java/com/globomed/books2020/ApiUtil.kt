@@ -1,5 +1,6 @@
 package com.globomed.books2020
 
+import android.net.Uri
 import android.util.Log
 import java.io.IOException
 import java.io.InputStream
@@ -9,13 +10,16 @@ import java.net.URL
 import java.util.*
 
 object ApiUtil {
-    private val BASE_API_URL: String = "https://www.googleapis.com/books/v1/volumes"
+    private val BASE_API_URL: String = "https://www.googleapis.com/books/v1/volumes?"
+    val QUERY_PARAMETER_KEY = "q"
 
     public fun buildUrl(title: String): URL? {
-        val fullUrl = BASE_API_URL + "q=" + title
+
         var url: URL? = null
+
+        val uri = Uri.parse(BASE_API_URL).buildUpon().appendQueryParameter(QUERY_PARAMETER_KEY,title).build()
         try {
-            url = URL(fullUrl)
+            url = URL(uri.toString())
         } catch (e: Exception) {
             e.printStackTrace()
         }
