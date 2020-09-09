@@ -1,5 +1,6 @@
 package com.globomed.books2020
 
+import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -73,8 +74,17 @@ class BookListFragment : Fragment() {
         override fun onPostExecute(result: String?) {
             val pbLoading = fragment?.findViewById<ProgressBar>(R.id.progressBarLoading)
             pbLoading?.visibility = View.INVISIBLE
+            val tvError = fragment?.findViewById<TextView>(R.id.textViewError)
             val tvResponse = fragment?.findViewById<TextView>(R.id.tvResponse)
+            if(result == null){
+                tvResponse?.visibility = View.INVISIBLE
+                tvError?.visibility = View.VISIBLE
+            }else{
+                tvError?.visibility =View.INVISIBLE
+                tvResponse?.visibility =View.VISIBLE
+            }
             tvResponse?.text = result
+
         }
     }
 }
