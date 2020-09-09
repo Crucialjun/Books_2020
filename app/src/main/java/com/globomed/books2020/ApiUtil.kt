@@ -10,14 +10,18 @@ import java.net.URL
 import java.util.*
 
 object ApiUtil {
-    private val BASE_API_URL: String = "https://www.googleapis.com/books/v1/volumes?"
-    val QUERY_PARAMETER_KEY = "q"
+    private const val BASE_API_URL: String = "https://www.googleapis.com/books/v1/volumes?"
+    private const val QUERY_PARAMETER_KEY = "q"
+    private const val KEY = "key"
+    private const val API_KEY = "AIzaSyCrJwf_YfwjQvWOqH4Tqh3rwNezFf3bFC8"
 
     public fun buildUrl(title: String): URL? {
 
         var url: URL? = null
 
-        val uri = Uri.parse(BASE_API_URL).buildUpon().appendQueryParameter(QUERY_PARAMETER_KEY,title).build()
+        val uri = Uri.parse(BASE_API_URL).buildUpon()
+            .appendQueryParameter(KEY, API_KEY)
+            .appendQueryParameter(QUERY_PARAMETER_KEY,title).build()
         try {
             url = URL(uri.toString())
         } catch (e: Exception) {

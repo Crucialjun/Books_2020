@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import kotlinx.android.synthetic.main.fragment_blook_list.*
 import java.io.IOException
 import java.lang.Exception
 import java.net.URL
@@ -43,6 +45,7 @@ class BookListFragment : Fragment() {
             Log.d("ERROR", "onViewCreated:${e.message} ")
         }
 
+        progressBarLoading
 
 
 
@@ -61,7 +64,15 @@ class BookListFragment : Fragment() {
             return result
         }
 
+        override fun onPreExecute() {
+            super.onPreExecute()
+            val pbLoading = fragment?.findViewById<ProgressBar>(R.id.progressBarLoading)
+            pbLoading?.visibility = View.VISIBLE
+        }
+
         override fun onPostExecute(result: String?) {
+            val pbLoading = fragment?.findViewById<ProgressBar>(R.id.progressBarLoading)
+            pbLoading?.visibility = View.INVISIBLE
             val tvResponse = fragment?.findViewById<TextView>(R.id.tvResponse)
             tvResponse?.text = result
         }
