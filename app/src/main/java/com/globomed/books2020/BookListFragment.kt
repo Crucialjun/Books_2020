@@ -1,26 +1,27 @@
 package com.globomed.books2020
 
-import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_blook_list.*
 import java.io.IOException
 import java.lang.Exception
 import java.net.URL
 
 
-class BookListFragment : Fragment() {
+class BookListFragment : Fragment(), SearchView.OnQueryTextListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
     }
 
@@ -37,7 +38,8 @@ class BookListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val booksLayoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        rvResponse.layoutManager = booksLayoutManager
         try {
             val bookUrl = ApiUtil.buildUrl("cooking")
             BooksQueryTask(this.activity).execute(bookUrl)
@@ -75,24 +77,44 @@ class BookListFragment : Fragment() {
             val pbLoading = fragment?.findViewById<ProgressBar>(R.id.progressBarLoading)
             pbLoading?.visibility = View.INVISIBLE
             val tvError = fragment?.findViewById<TextView>(R.id.textViewError)
-            val tvResponse = fragment?.findViewById<TextView>(R.id.tvResponse)
+            val rvResponse = fragment?.findViewById<RecyclerView>(R.id.rvResponse)
+
             if(result == null){
-                tvResponse?.visibility = View.INVISIBLE
+                rvResponse?.visibility = View.INVISIBLE
                 tvError?.visibility = View.VISIBLE
             }else{
                 tvError?.visibility =View.INVISIBLE
-                tvResponse?.visibility =View.VISIBLE
+                rvResponse?.visibility =View.VISIBLE
             }
             val books = ApiUtil.getBooksFromJson(result!!)
-            var  resultString = ""
 
-            for (book : Book in books!!){
-                resultString = resultString + book.title + "\n" + book.publishedDate + "\n\n"
-            }
-
-            tvResponse?.text = resultString
+            val booksAdapter = BooksAdapter(books!!)
+            rvResponse?.adapter = booksAdapter
 
 
         }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.book_list_menu,menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
+    }
+
+    override fun onQueryTextSubmit(p0: String?): Boolean {
+        try{
+            val bookUrl = ApiUtil.buildUrl(p0!!)
+            BooksQueryTask(this.activity).execute(bookUrl)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+
+        return false
+    }
+
+    override fun onQueryTextChange(p0: String?): Boolean {
+        return false
     }
 }
