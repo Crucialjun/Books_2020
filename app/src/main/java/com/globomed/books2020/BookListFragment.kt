@@ -83,7 +83,15 @@ class BookListFragment : Fragment() {
                 tvError?.visibility =View.INVISIBLE
                 tvResponse?.visibility =View.VISIBLE
             }
-            tvResponse?.text = result
+            val books = ApiUtil.getBooksFromJson(result!!)
+            var  resultString = ""
+
+            for (book : Book in books!!){
+                resultString = resultString + book.title + "\n" + book.publishedDate + "\n\n"
+            }
+
+            tvResponse?.text = resultString
+
 
         }
     }
